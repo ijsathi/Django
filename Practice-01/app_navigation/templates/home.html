@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        .h {
+            border: 2px solid green;
+            width: 60%;
+            padding: 20px;
+            margin-left: 90px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1><a href='/'>Home</a></h1>
+    <h1><a href='/navigation/about'>First App / About</a></h1>
+    <h1><a href='/navigation/contact'>First App / Contact</a></h1>
+
+    <h1 style="text-align: center;">This is Home Page </h1>
+    <div class='h'>
+        <h4>Author: {{author}}</h4>
+        <h4>ID: {{id}}</h4>
+        <p>Email: {{email}}</p>
+        <p>Age: {{age}}</p>
+        <h4>Hobby's: {{hobbys}}</h4>
+        <h4>Hobby's with join: {{hobbys | join:" , "}}</h4>
+    </div>
+    <div class='condition'>
+        {% if age >= 20 %}
+            <p>She will give a passport</p>
+        {% elif age >= 10 and age <= 19 %}
+            <p>She will not give a passport</p>
+        {% else %}
+            <p>She child</p>
+        {%endif%}
+    </div>
+    <div class='forloop'>
+        {% for i in courses %}
+        <h3>ID: {{i.id}}, Course Name: {{i.name}}, Course Fee: {{i.fee}} </h3>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1>This is Myapp</h1>
+    <table class="table table-success table-striped">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Website</th>
+            </tr>
+        </thead>
+        {% for i in data %}
+        <tbody>
+            <tr>
+                <th scope="row">{{i.id}}</th>
+                <td> {{i.name}} </td>
+                <td> {{i.username}} </td>
+                <td>{{i.email}}</td>
+                <td>{{i.website}}</td>
+            </tr>
+        </tbody>
+        {% endfor %}
+
+    </table>
+
+    <img src="{% static 'imgs/img-1.jpg' %}" alt="">
+{% endblock %}

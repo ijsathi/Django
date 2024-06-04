@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class='pt-4' style="width:60%; hight:100%; margin:auto;">
+<form method="post" action="/myapp/about/">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" aria-describedby="nameHelp" name="username">
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Password</label>
+      <input type="email" class="form-control" id="email" name='useremail'>
+    </div>
+    <select class="form-select mb-4" aria-label="Default select example" name="select">
+      <option selected>Ratings</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+{% endblock %}
