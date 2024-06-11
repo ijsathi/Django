@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h3> Login </h3>
+<div>
+    {% if messages %}
+    {% for m in messages  %}
+        <h3 class='text-success'>{{m}}</h3>
+    {% endfor %}
+    {% endif %}
+    <form class="" action="" method="post" style="width: 70%; margin: auto;" novalidate>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-info">Submit</button><br/>
+        <small> New user? <a href="{% url 'register' %}">Register</a> </small>
+    </form>
+</div>
+{% endblock %}

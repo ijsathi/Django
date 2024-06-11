@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="mt-3">
+    <div class="jumbotron jumbotron-fluid bg-info text-white">
+        <div class="container">
+            <h1 class="display-4">Task Management System</h1>
+            <p class="lead">Efficiently manage your tasks with our system.</p>
+        </div>
+    </div>
+</div>
+<div class="row">
+    {% for task in tasks %}
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Task ID: {{ task.id }}</h5>
+                    <h5 class="card-title">{{ task.taskTitle }}</h5>
+                    <p class="card-text">{{ task.taskDescription }}</p>
+                    <p class="card-text">Assign Date: {{ task.task_assign_date | date:"M-d-Y" }}</p>
+                    <p><strong>Categories:</strong> 
+                        {% for category in task.categories.all %}
+                            {{ category.category_name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% if task.is_completed %}
+                        <p class="text-success">Completed</p>
+                    {% else %}
+                        <a href="{% url 'edit_task' task.id %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'delete_task' task.id %}" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'complete_task' task.id %}" class="btn btn-success">Complete</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
