@@ -1,22 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-flex flex-wrap justify-content-center px-5">
-    {% for post in data %}
-    <div class="col-sm-3 mt-5">
-        <div class="card mx-2">
-            <div class="card-body">
-                <h5 class="card-title">{{post.title}}</h5>
-                <p class="card-text">{{post.content}}</p> <span href="#" class=""> Author: {{post.author.name}}</span><br>
-                {% for cat in post.category.all %}
-                <button href="" class="btn btn-info btn-sm m-1" disabled>{{cat.name}}</button>
-                {% endfor %}
-                <div class="d-flex justify-content-between">
-                    <a href="{% url 'edit_post' post.id %}" class="btn btn-warning">Edit</a>
-                    <a href="{% url 'delete_post' post.id %}" class="btn btn-danger">Delete</a>
+<div class="d-flex flex-wrap px-5 mt-4 align-items-center">
+    <div class="col-6">
+        <h3>Welcome to Blog</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore non, ad et ipsum nobis sed iure eveniet
+            accusamus cum totam veniam aut consequuntur possimus vel tempora. Deleniti repellat ad eos?</p>
+    </div>
+    <div class="col-6">
+        <img class="w-100" src="https://visionhospitalgoa.com/wp-content/uploads/2020/09/blog-banner.jpg" alt="">
+    </div>
+</div>
+
+<div class="d-flex flex-wrap p-4">
+    <div class="col-2 bg-dark p-4 text-white">
+        <p>All Categories</p>
+        {%for cat in category %}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="category" id="{{cat.id}}">
+            <label class="form-check-label" for="{{cat.id}}">
+                <a class="nav-link" href="{% url 'category_wise_post' cat.slug %}"> {{cat.name}} </a>
+            </label>
+        </div>
+        {%endfor%}
+    </div>
+    <div class="col-10 p-4">
+        <h4>{{data | length}} results found</h4>
+        <div class="d-flex flex-wrap">
+            {% for post in data %}
+            <div class="col-sm-3">
+                <div class="card mx-2 mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{post.title}}</h5>
+                        <p class="card-text">{{post.content}}</p> <span href="#" class=""> Author:
+                            {{post.author.first_name}} {{post.author.last_name}}</span><br>
+                        {% for cat in post.category.all %}
+                        <a class="btn btn-info btn-sm m-1"
+                            href="{% url 'category_wise_post' cat.slug %}">{{cat.name}}</a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
 </div>
 {% endblock %}
