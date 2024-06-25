@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Profile</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+    </div>
+</div>
+
+{% comment %} <div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <h2>Change Password</h2>
+        <form method="POST" action="{% url 'password-change' %}">
+            {% csrf_token %}
+            {{ password_change_form.as_p }}
+            <button type="submit" class="btn btn-primary">Change Password</button>
+        </form>
+    </div>
+</div> {% endcomment %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <h2>Order History</h2>
+        <ul class="list-group">
+            {% for order in orders %}
+            <li class="list-group-item">
+                {{ order.car.title }} - {{ order.date_ordered }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
