@@ -1,0 +1,27 @@
+<!-- library/templates/library/return_book.html -->
+{% extends 'base.html' %}
+
+{% block title %}Return Book - Library Management{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h2>Return Book</h2>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ borrow.book.title }}</h5>
+                    <p class="card-text">Author: {{ borrow.book.author_name }}</p>
+                    <p class="card-text">Borrowing Price: {{ borrow.book.borrowing_price }}</p>
+                    <p class="card-text">Borrowed Date: {{ borrow.borrow_date }}</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Confirm Return</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

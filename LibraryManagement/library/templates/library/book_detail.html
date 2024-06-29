@@ -1,28 +1,69 @@
 {% extends 'base.html' %}
-
-{% block title %}Details - Library Management{% endblock %}
+{% load crispy_forms_tags %}
+{% block title %}{{ book.title }} - Library Management{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-4">
-                <img src="{{ book.image.url }}" class="img-fluid" alt="{{ book.title }}">
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="row g-0">
+                    <!-- Left side: Image -->
+                    <div class="col-md-4">
+                        <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.title }}">
+                    </div>
+                    <!-- Right side: Details -->
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">Author: {{ book.author_name }}</p>
+                            <p class="card-text">Description: {{ book.description }}</p>
+                            <p class="card-text">Borrowing Price: {{ book.borrowing_price }}</p>
+                            <p class="card-text">Categories: 
+                                {% for category in book.categories.all %}
+                                    <span class="badge bg-secondary">{{ category.name }}</span>
+                                {% endfor %}
+                            </p>
+                            <p><strong>Available:</strong> {% if book.available %}Yes{% else %}No{% endif %}</p>
+                            
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'book_detail' book.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" name="borrow" class="btn btn-primary" {% if not book.available %}disabled{% endif %}>
+                                        Borrow Book
+                                    </button>
+                                </form>
+                            {% else %}
+                                <p>Please <a href="{% url 'login' %}">login</a> to borrow this book.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-8">
-                <h2>{{ book.title }}</h2>
-                <p><strong>Author:</strong> {{ book.author_name }}</p>
-                <p><strong>Description:</strong> {{ book.description }}</p>
-                <p><strong>Borrowing Price:</strong> {{ book.borrowing_price }}</p>
-                <p><strong>Categories:</strong> 
-                    {% for category in book.categories.all %}
-                        {{ category.name }}
-                        {% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </p>
-                <p><strong>Available:</strong> {% if book.available %}Yes{% else %}No{% endif %}</p>
-                <!-- Add borrow button or logic based on availability -->
-            </div>
+            
+
+            <h4>Reviews</h4>
+            {% for review in reviews %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ review.user.username }}</h5><small>{{review.created_at}} </small>
+                        <p class="card-text">Rating: {{ review.rating }}/5</p>
+                        <p class="card-text">{{ review.review }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% if user.is_authenticated %}
+                <h4>Leave a Review</h4>
+                <form method="post" action="{% url 'book_detail' book.id %}">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" name="review" class="btn btn-success">Submit Review</button>
+                </form>
+            {% else %}
+                <p>Please <a href="{% url 'login' %}">login</a> to leave a review.</p>
+            {% endif %}
         </div>
     </div>
-    
-    {% endblock %}
+</div>
+{% endblock %}

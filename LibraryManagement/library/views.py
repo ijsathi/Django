@@ -9,23 +9,13 @@ from .forms import DepositForm, ReviewForm, BorrowForm, ReturnForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
+from django.conf import settings
 
-def home(request, category_slug = None):
+
+def home(request):
     categories = Category.objects.all()
     books = Book.objects.all()
-    if category_slug is not None:
-        category = Category.objects.get(slug = category_slug)
-        books = books.filter(categories=category)
     return render(request, 'library/home.html', {'categories': categories, 'books': books})
-""" def home(request, category_slug=None):
-    categories = Category.objects.all()
-    books = Book.objects.all()
-
-    if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
-        books = books.filter(categories=category)
-
-    return render(request, 'library/home.html', {'categories': categories, 'books': books}) """
 
 def register(request):
     if request.method == 'POST':
@@ -52,6 +42,7 @@ def user_login(request):
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
 
+@login_required
 def user_logout(request):
     logout(request)
     return redirect('home')
@@ -61,9 +52,7 @@ def profile(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
-        # Handle the case where UserProfile does not exist for the current user
-        user_profile = None  # or create a new UserProfile instance here
-
+        user_profile = None 
     return render(request, 'library/profile.html', {'user_profile': user_profile})
 
 @login_required
@@ -121,7 +110,6 @@ def deposit_money(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
-        # Create a new UserProfile instance if it doesn't exist
         user_profile = UserProfile.objects.create(user=request.user)
 
     if request.method == 'POST':
@@ -130,16 +118,66 @@ def deposit_money(request):
             amount = form.cleaned_data['amount']
             user_profile.balance += amount
             user_profile.save()
-            return redirect('profile')  # Redirect to profile after deposit
+            return redirect('profile')  
     else:
         form = DepositForm()
 
     return render(request, 'library/deposit_money.html', {'form': form})
 
+# def book_detail(request, book_id):
+#     book = get_object_or_404(Book, pk=book_id)
+#     reviews = Review.objects.filter(book=book)
+#     return render(request, 'library/book_detail.html', {'book': book, 'reviews': reviews})
+
+@login_required
 def book_detail(request, book_id):
-    book = get_object_or_404(Book, pk=book_id)
-    reviews = Review.objects.filter(book=book)
-    return render(request, 'library/book_detail.html', {'book': book, 'reviews': reviews})
+    book = get_object_or_404(Book, id=book_id)
+    
+    if request.method == 'POST':
+        if 'borrow' in request.POST:
+            user_profile = get_object_or_404(UserProfile, user=request.user)
+            if book.available and user_profile.balance >= book.borrowing_price:
+                user_profile.balance -= book.borrowing_price
+                user_profile.save()
+
+                book.available = False
+                book.save()
+
+                Borrow.objects.create(user=request.user, book=book)
+
+                send_mail(
+                    'Book Borrowed Successfully',
+                    f'You have successfully borrowed {book.title}. Thanks for takes it, Stay us!!!',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [request.user.email]
+                )
+
+                return redirect('book_detail', book_id=book.id)
+            else:
+                return render(request, 'library/book_detail.html', {
+                    'book': book,
+                    'error': 'Book is not available or insufficient balance.',
+                    'form': ReviewForm()
+                })
+        elif 'review' in request.POST:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                Review.objects.create(
+                    book=book,
+                    user=request.user,
+                    rating=form.cleaned_data['rating'],
+                    review=form.cleaned_data['comment']
+                )
+                return redirect('book_detail', book_id=book.id)
+    else:
+        form = ReviewForm()
+
+    reviews = book.reviews.all()
+    return render(request, 'library/book_detail.html', {
+        'book': book,
+        'form': form,
+        'reviews': reviews
+    })
 
 @login_required
 def add_review(request, book_id):
@@ -156,12 +194,12 @@ def add_review(request, book_id):
 
 def category_books(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    books = category.book_set.all()  # Assuming 'Book' model has a ForeignKey to 'Category'
-    categories = Category.objects.all()  # Fetch all categories for navigation
+    books = category.book_set.all() 
+    categories = Category.objects.all() 
     context = {
         'category': category,
         'books': books,
         'categories': categories,
-        'selected_category_slug': category_slug,  # Highlight the selected category in the template
+        'selected_category_slug': category_slug,  
     }
     return render(request, 'library/home.html', context)

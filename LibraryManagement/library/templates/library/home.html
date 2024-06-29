@@ -23,18 +23,13 @@
                     <h5 class="card-title">Categories</h5>
                 </div>
                 <div class="card-body">
-                    <ul class="list-group">
-                        <form id="categoryFilterForm">
-                            <select name="category" class="form-select mb-3" onchange="submitCategoryForm()">
-                                <option value="">All Categories</option>
-                                {% for category_item in categories %}
-                                    <option value="{{ category_item.slug }}" {% if request.GET.category == category_item.slug %}selected{% endif %}>
-                                        {{ category_item.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                    </ul>
+                <ul class="list-group">
+                    {% for category in categories %}
+                        <li class="list-group-item">
+                            <a class='text-decoration-none' href="{% url 'category_books' category.slug %}">{{ category.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
                 </div>
             </div>
         </div>

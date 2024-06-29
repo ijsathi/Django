@@ -1,3 +1,5 @@
+<!-- profile.html -->
+
 {% extends 'base.html' %}
 
 {% block title %}Profile - Library Management{% endblock %}
@@ -12,7 +14,31 @@
             <p class="card-text"><strong>First Name:</strong> {{ user.first_name }}</p>
             <p class="card-text"><strong>Last Name:</strong> {{ user.last_name }}</p>
             <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
-            <p class="card-text"><strong>Balance:</strong> {{ user.userprofile.balance }}</p>
+            <p class="card-text"><strong>Balance:</strong> {{ user.userprofile.balance }}$</p>
+        </div>
+    </div>
+
+    <h2 class="mt-4">Borrowing History</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Borrowed Date</th>
+                        <th scope="col">Returned Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrow in borrows %}
+                    <tr>
+                        <td>{{ borrow.book.title }}</td>
+                        <td>{{ borrow.borrow_date }}</td>
+                        <td>{{ borrow.return_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

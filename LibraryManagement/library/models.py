@@ -29,10 +29,11 @@ class Borrow(models.Model):
 
     def __str__(self):
         return f'{self.user.username} borrowed {self.book.title}'
-
 class Review(models.Model):
+    book = models.ForeignKey(Book, related_name='reviews', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    rating = models.IntegerField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     review = models.TextField()
     review_date = models.DateTimeField(auto_now_add=True)
 
@@ -45,3 +46,10 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} profile'
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return self.user.username
