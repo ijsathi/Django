@@ -1,0 +1,51 @@
+.banner-container{
+    width: 100%;
+    margin: auto;
+    padding: 30px;
+}
+.banner{
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+    background: linear-gradient(linen, rgb(248, 218, 206));
+    align-items: center;
+    box-shadow: 4px 4px 8px gainsboro;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+.banner-context{
+    /* margin-left: 20px; */
+    width: 370px;
+    text-align: start;
+}
+.banner-img img{
+    width: 400px;
+    margin-top: -50px;
+    height: auto;
+}
+.services-container{
+    width: 70%;
+    margin: auto;
+}
+.service-text{
+    margin-top: 20px;
+}
+.service-text h3{
+    color: rgb(246, 116, 64);
+}
+@media only screen and (max-width: 600px) {
+    .banner {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 10px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .banner-context{
+        width: 100%;
+    }
+    .banner-img img {
+        width: 100%;
+        margin-top: 0;
+    }
+}
