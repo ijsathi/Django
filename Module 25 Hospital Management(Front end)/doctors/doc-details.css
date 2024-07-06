@@ -1,0 +1,11 @@
+.doc-img img{
+    width: 250px;
+    height: 250px;
+}
+.doctor-details{
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    width: 75%;
+    margin: auto;
+}
